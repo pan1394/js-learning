@@ -1,0 +1,53 @@
+<html>
+<head>
+</head>
+<body>
+
+<div>test page</div>
+</body>
+<script src="jquery.js"></script>
+<script>
+    /**
+     * jsonp 遇到各种奇葩问题
+     * 1. 无法在nodejs 项目中调用ajax, 必须使用 html 方式。
+     * 2. demo4_2() 无法成功
+     * 3. 无法使用file://文件协议访问， 必须对http服务进行试验。
+     */
+    function demo4_1() {
+        var url = "http://127.0.0.1:8080?callback=fn";
+        // 创建script标签，设置其属性
+        // 把script标签加入head，此时调用开始
+        $('head').append($("<script src=" + url + "><//script>"));
+        console.log($('script').prop('src'));
+    }
+
+    function demo4_2() {
+        $.getJSON("http://127.0.0.1:8080/a?callback=fn", function (data) {
+            print(data);
+        })
+    }
+
+    function demo4_3() {
+        $.ajax("http://127.0.0.1:8080/a", {
+            method:'get',
+            dataType:'jsonp',
+            jsonp: 'callback', //
+            jsonpCallback: 'fn' // 回调函数名;
+        })
+    }
+
+    function fn(data) {
+        print(data);
+    }
+
+    function print(data) {
+        console.log('name: ', data.name);
+        console.log('gender: ', data.gender);
+    }
+
+
+    demo4_3();
+
+
+</script>
+</html>
